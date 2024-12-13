@@ -23,11 +23,11 @@ namespace TestingSamples.Tests
                         .AddFakeMessageExecutors()
                         .AddPipelineSimulation()
 
-                        // Build the context
                         .UsePipelineSimulation()
-                        .UseCrud()
                         .UseMessages()
+                        .UseCrud()
 
+                        // Build the context
                         .SetLicense(FakeXrmEasyLicense.NonCommercial)
                         .Build();
 

@@ -1,4 +1,5 @@
 ﻿using FakeXrmEasy.Plugins;
+using FluentAssertions;
 using Microsoft.Xrm.Sdk;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,12 @@ namespace TestingSamples.Tests
             contact["lastname"] = "Doe";
 
             // Act
-            var ex = Assert.Throws<InvalidPluginExecutionException>(() => _context.ExecutePluginWithTarget<ContactNameValidationPlugin>(contact));
+            Func<IPlugin> action = () => _context.ExecutePluginWithTarget<ContactNameValidationPlugin>(contact);
 
             // Assert
-            Assert.Equal("First Name must not be empty.", ex.Message);
+            action.Should()
+                .Throw<InvalidPluginExecutionException>()
+                .WithMessage("First Name must not be empty.");
         }
 
         [Fact]
@@ -36,10 +39,12 @@ namespace TestingSamples.Tests
             contact["lastname"] = string.Empty;
 
             // Act
-            var ex = Assert.Throws<InvalidPluginExecutionException>(() => _context.ExecutePluginWithTarget<ContactNameValidationPlugin>(contact));
+            Func<IPlugin> action = () => _context.ExecutePluginWithTarget<ContactNameValidationPlugin>(contact);
 
             // Assert
-            Assert.Equal("Last Name must not be empty.", ex.Message);
+            action.Should()
+                .Throw<InvalidPluginExecutionException>()
+                .WithMessage("Last Name must not be empty.");
         }
 
         [Fact]
@@ -49,26 +54,27 @@ namespace TestingSamples.Tests
             var account = new Entity("account");
 
             // Act
-            var ex = Assert.Throws<InvalidPluginExecutionException>(() => _context.ExecutePluginWithTarget<ContactNameValidationPlugin>(account));
+            Func<IPlugin> action = () => _context.ExecutePluginWithTarget<ContactNameValidationPlugin>(account);
 
             // Assert
-            Assert.Equal("This plugin is only registered on the 'Contact' entity.", ex.Message);
+            action.Should()
+                .Throw<InvalidPluginExecutionException>()
+                .WithMessage("This plugin is only registered on the 'Contact' entity.");
         }
 
         [Fact]
         public void ShouldThrowExceptionWhenTargetIsNotSet()
         {
             // Arrange
-            var context = new XrmFakedPluginExecutionContext()
-            {
-                InputParameters = new ParameterCollection()
-            };
+            var context = _context.GetDefaultPluginContext();
 
             // Act
-            var ex = Assert.Throws<InvalidPluginExecutionException>(() => _context.ExecutePluginWith<ContactNameValidationPlugin>(context));
+            Func<IPlugin> action = () => _context.ExecutePluginWith<ContactNameValidationPlugin>(context);
 
             // Assert
-            Assert.Equal("ContactNameValidationPlugin is not registered on the 'Target' of the execution context.", ex.Message);
+            action.Should()
+                .Throw<InvalidPluginExecutionException>()
+                .WithMessage("ContactNameValidationPlugin is not registered on the 'Target' of the execution context.");
         }
 
         [Fact]
@@ -80,10 +86,10 @@ namespace TestingSamples.Tests
             contact["lastname"] = "Doe";
 
             // Act
-            _context.ExecutePluginWithTarget<ContactNameValidationPlugin>(contact);
+            Func<IPlugin> action = () => _context.ExecutePluginWithTarget<ContactNameValidationPlugin>(contact);
 
             // Assert
-            // No exception is thrown
+            action.Should().NotThrow();
         }
     }
 }
