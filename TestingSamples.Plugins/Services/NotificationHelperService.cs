@@ -24,15 +24,38 @@ namespace TestingSamples.Plugins.Services
             NotifyContacts(account, contacts);
         }
 
+        public virtual void SendWelcomeEmail(Guid contactId)
+        {
+            var contact = Context.InitiatingUserService.Retrieve("contact", contactId, new ColumnSet("fullname"));
+            SendWelcomeEmailNotification(contact);
+        }
+
         protected virtual void NotifyContacts(Entity account, DataCollection<Entity> contacts)
         {
             foreach (var contact in contacts)
             {
-                SendEmailNotification(account, contact);
+                SendAccountStatusChangeEmailNotification(account, contact);
             }
         }
 
-        protected virtual void SendEmailNotification(Entity account, Entity contact)
+        protected virtual void SendWelcomeEmailNotification(Entity contact)
+        {
+            var email = new Entity("email")
+            {
+                ["subject"] = "Welcome",
+                ["description"] = $"Welcome to our organization, {contact.GetAttributeValue<string>("fullname")}.",
+                ["to"] = new EntityCollection(new[]
+                {
+                    new Entity("activityparty")
+                    {
+                        ["partyid"] = contact.ToEntityReference()
+                    }
+                })
+            };
+            Context.InitiatingUserService.Create(email);
+        }
+
+        protected virtual void SendAccountStatusChangeEmailNotification(Entity account, Entity contact)
         {
             var email = new Entity("email")
             {

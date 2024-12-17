@@ -86,5 +86,18 @@ namespace TestingSamples.Tests
                 .Throw<FaultException>()
                 .WithMessage("account With Id = * Does Not Exist");
         }
+
+        [Fact]
+        public void ShouldCreateWelcomeEmailToContact()
+        {
+            // Arrange
+            _sut = new NotificationHelperService(BuildLocalPluginContext());
+
+            // Act
+            _sut.SendWelcomeEmail(_context.CreateQuery("contact").First().Id);
+
+            // Assert
+            _context.CreateQuery("email").Count().Should().Be(1);
+        }
     }
 }
