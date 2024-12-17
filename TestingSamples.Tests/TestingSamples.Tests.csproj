@@ -56,8 +56,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountStatusCascadeToContactsPluginTests.cs" />
+    <Compile Include="AccountStatusNotificationPluginTests.cs" />
     <Compile Include="ContactNameValidationPluginTests.cs" />
     <Compile Include="FakeXrmEasyTestsBase.cs" />
+    <Compile Include="NotificationHelperServiceTests.cs" />
     <Compile Include="SanityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -4,7 +4,10 @@ using FakeXrmEasy.Middleware;
 using FakeXrmEasy.Middleware.Crud;
 using FakeXrmEasy.Middleware.Messages;
 using FakeXrmEasy.Middleware.Pipeline;
+using FakeXrmEasy.Plugins;
 using Microsoft.Xrm.Sdk;
+using System.ComponentModel;
+using TestingSamples.Plugins;
 
 namespace TestingSamples.Tests
 {
@@ -33,5 +36,15 @@ namespace TestingSamples.Tests
 
             _service = _context.GetOrganizationService();
         }
+
+        protected ILocalPluginContext BuildLocalPluginContext(XrmFakedPluginExecutionContext context)
+        {
+            var properties = _context.GetPluginContextProperties();
+            var serviceProvider = properties.GetServiceProvider(context);
+
+            return new LocalPluginContext(serviceProvider);
+        }
+
+        protected ILocalPluginContext BuildLocalPluginContext() => BuildLocalPluginContext(_context.GetDefaultPluginContext());
     }
 }
