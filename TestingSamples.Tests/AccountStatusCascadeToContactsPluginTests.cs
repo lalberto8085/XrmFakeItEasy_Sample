@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TestingSamples.Plugins;
+using TestingSamples.Tests.Utils;
 using Xunit;
 
 namespace TestingSamples.Tests
@@ -60,7 +61,7 @@ namespace TestingSamples.Tests
 
             // Assert
             action.Should()
-                .ThrowExactly<InvalidPluginExecutionException>()
+                .Throw<InvalidPluginExecutionException>()
                 .WithMessage("AccountStatusCascadeToContactsPlugin is not registered on the 'Target' of the execution context.");
         }
 
@@ -75,7 +76,7 @@ namespace TestingSamples.Tests
 
             // Assert
             action.Should()
-                .ThrowExactly<InvalidPluginExecutionException>()
+                .Throw<InvalidPluginExecutionException>()
                 .WithMessage("AccountStatusCascadeToContactsPlugin is not registered on the 'Target' of the execution context.");
         }
 
@@ -91,7 +92,7 @@ namespace TestingSamples.Tests
 
             // Assert
             action.Should()
-                .ThrowExactly<InvalidPluginExecutionException>()
+                .Throw<InvalidPluginExecutionException>()
                 .WithMessage("PreImage is not available.");
         }
 
@@ -101,25 +102,17 @@ namespace TestingSamples.Tests
             // Arrange
             var account = new Entity("account", _account1_Id)
             {
-                ["statuscode"] = new OptionSetValue(1)
+                ["statuscode"] = new OptionSetValue(2)
             };
 
             var preImage = new Entity("account", _account1_Id)
             {
-                ["statuscode"] = new OptionSetValue(1)
+                ["statuscode"] = new OptionSetValue(2)
             };
 
-            var context = new XrmFakedPluginExecutionContext
-            {
-                InputParameters = new ParameterCollection
-                {
-                    new KeyValuePair<string, object>("Target", account)
-                },
-                PreEntityImages = new EntityImageCollection
-                {
-                    new KeyValuePair<string, Entity>("PreImage", preImage)
-                },
-            };
+            var context = _context.GetDefaultPluginContext();
+            context.InputParameters["Target"] = account;
+            context.PreEntityImages["PreImage"] = preImage;
 
             // Act
             _context.ExecutePluginWith<AccountStatusCascadeToContactsPlugin>(context);
@@ -128,7 +121,7 @@ namespace TestingSamples.Tests
             _context.CreateQuery("contact")
                 .Where(c => c.GetAttributeValue<EntityReference>("parentcustomerid").Id == _account1_Id)
                 .Should()
-                .AllSatisfy(c => c.GetAttributeValue<OptionSetValue>("statuscode").Value.Should().Be(1));
+                .AllSatisfy(contactEntity => contactEntity.Should().HaveAttributeWithValue("statuscode", new OptionSetValue(1)));
         }
 
         [Fact]
@@ -145,17 +138,9 @@ namespace TestingSamples.Tests
                 ["statuscode"] = new OptionSetValue(1)
             };
 
-            var context = new XrmFakedPluginExecutionContext
-            {
-                InputParameters = new ParameterCollection
-                {
-                    new KeyValuePair<string, object>("Target", target)
-                },
-                PreEntityImages = new EntityImageCollection
-                {
-                    new KeyValuePair<string, Entity>("PreImage", preImage)
-                },
-            };
+            var context = _context.GetDefaultPluginContext();
+            context.InputParameters["Target"] = target;
+            context.PreEntityImages["PreImage"] = preImage;
 
             // Act
             _context.ExecutePluginWith<AccountStatusCascadeToContactsPlugin>(context);
@@ -167,7 +152,7 @@ namespace TestingSamples.Tests
                 .Should()
                 .HaveCount(2)
                 .And
-                .AllSatisfy(c => c.GetAttributeValue<OptionSetValue>("statuscode").Value.Should().Be(2));
+                .AllSatisfy(c => c.Should().HaveAttributeWithValue("statuscode", new OptionSetValue(2)));
         }
 
         [Fact]
@@ -184,17 +169,9 @@ namespace TestingSamples.Tests
                 ["statuscode"] = new OptionSetValue(1)
             };
 
-            var context = new XrmFakedPluginExecutionContext
-            {
-                InputParameters = new ParameterCollection
-                {
-                    new KeyValuePair<string, object>("Target", target)
-                },
-                PreEntityImages = new EntityImageCollection
-                {
-                    new KeyValuePair<string, Entity>("PreImage", preImage)
-                },
-            };
+            var context = _context.GetDefaultPluginContext();
+            context.InputParameters["Target"] = target;
+            context.PreEntityImages["PreImage"] = preImage;
 
             // Act
             _context.ExecutePluginWith<AccountStatusCascadeToContactsPlugin>(context);
@@ -205,14 +182,14 @@ namespace TestingSamples.Tests
                 .Should()
                 .HaveCount(1)
                 .And
-                .AllSatisfy(c => c.GetAttributeValue<OptionSetValue>("statuscode").Value.Should().Be(2));
+                .AllSatisfy(c => c.Should().HaveAttributeWithValue("statuscode", new OptionSetValue(2)));
 
             _context.CreateQuery("contact")
                 .Where(c => c.GetAttributeValue<EntityReference>("parentcustomerid").Id == _account1_Id)
                 .Should()
                 .HaveCount(2)
                 .And
-                .AllSatisfy(c => c.GetAttributeValue<OptionSetValue>("statuscode").Value.Should().Be(1));
+                .AllSatisfy(c => c.Should().HaveAttributeWithValue("statuscode", new OptionSetValue(1)));
         }
     }
 }

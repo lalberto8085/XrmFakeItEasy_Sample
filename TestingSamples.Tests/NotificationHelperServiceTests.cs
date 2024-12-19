@@ -69,7 +69,7 @@ namespace TestingSamples.Tests
             _sut.SendAccountStatusChangeNotification(_account1_Id);
 
             // Assert
-             _context.CreateQuery("email").Count().Should().Be(2);
+             _context.CreateQuery("email").Should().HaveCount(2);
         }
 
         [Fact]
@@ -98,6 +98,21 @@ namespace TestingSamples.Tests
 
             // Assert
             _context.CreateQuery("email").Count().Should().Be(1);
+        }
+
+        [Fact]
+        public void ShouldThrowIfContactNotFound()
+        {
+            // Arrange
+            _sut = new NotificationHelperService(BuildLocalPluginContext());
+
+            // Act
+            Action action = () => _sut.SendWelcomeEmail(Guid.NewGuid());
+
+            // Assert
+            action.Should()
+                .Throw<FaultException>()
+                .WithMessage("contact With Id = * Does Not Exist");
         }
     }
 }

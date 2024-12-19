@@ -24,7 +24,10 @@ namespace TestingSamples.Tests
                         // Add middleware
                         .AddCrud()
                         .AddFakeMessageExecutors()
-                        .AddPipelineSimulation()
+                        .AddPipelineSimulation(new PipelineOptions
+                        {
+                            UsePluginStepRegistrationValidation = true
+                        })
 
                         .UsePipelineSimulation()
                         .UseMessages()

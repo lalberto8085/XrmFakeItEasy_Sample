@@ -26,7 +26,7 @@ namespace TestingSamples.Tests.Utils
             return new AndConstraint<EntityAssertions>(this);
         }
 
-        public AndConstraint<EntityAssertions> HaveAttributeValue<T>(string attributeName, T expectedValue, string because = "", params object[] becauseArgs)
+        public AndConstraint<EntityAssertions> HaveAttributeWithValue<T>(string attributeName, T expectedValue, string because = "", params object[] becauseArgs)
         {
             AssertEntityNotNull();
             AssertEntityHasAttribute(attributeName, because, becauseArgs);

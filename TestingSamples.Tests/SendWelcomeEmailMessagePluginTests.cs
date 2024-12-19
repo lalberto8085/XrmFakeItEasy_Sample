@@ -83,7 +83,12 @@ namespace TestingSamples.Tests
         {
             // Arrange
             var context = GetContext();
-            context.InputParameters["Target"] = new Entity("contact", Guid.NewGuid());
+            context.InputParameters["Target"] = new Entity("contact", Guid.NewGuid())
+            {
+                ["firstname"] = "John",
+                ["lastname"] = "Doe",
+                ["emailaddress1"] = "some@email.com",
+            };
 
             var mockContext = new Mock<ILocalPluginContext>();
             var fakeNotificationHelper = new Mock<NotificationHelperService>(mockContext.Object);

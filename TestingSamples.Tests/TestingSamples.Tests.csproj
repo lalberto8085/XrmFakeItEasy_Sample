@@ -59,12 +59,13 @@
     <Compile Include="AccountStatusNotificationPluginTests.cs" />
     <Compile Include="ContactEmailSetterTests.cs" />
     <Compile Include="ContactNameValidationPluginTests.cs" />
+    <Compile Include="ContactWelcomeEmailIntegrationTests.cs" />
     <Compile Include="FakeXrmEasyTestsBase.cs" />
     <Compile Include="NotificationHelperServiceTests.cs" />
     <Compile Include="SanityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SendWelcomeEmailMessagePluginTests.cs" />
-    <Compile Include="Utils\CustomEntityAssertions.cs" />
+    <Compile Include="Utils\EntityAssertionsExtensions.cs" />
     <Compile Include="Utils\EntityAssertions.cs" />
   </ItemGroup>
   <ItemGroup>

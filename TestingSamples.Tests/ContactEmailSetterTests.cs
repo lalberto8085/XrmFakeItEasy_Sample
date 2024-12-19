@@ -58,8 +58,10 @@ namespace TestingSamples.Tests
         [Fact]
         public void ShouldSetDefaultEmail()
         {
+            // ToDo: make sure this is validating the entity logical name
+
             // Arrange
-            var context = GetContext(entityName: "account");
+            var context = GetContext();
             var contact = new Entity("contact", Guid.NewGuid());
             context.InputParameters["Target"] = contact;
 
@@ -67,7 +69,7 @@ namespace TestingSamples.Tests
             _context.ExecutePluginWith<ContactEmailSetterPlugin>(context);
 
             // Assert
-            contact.Should().HaveAttributeValue("emailaddress1", "default@example.com");
+            contact.Should().HaveAttributeWithValue("emailaddress1", "default@example.com");
         }
 
         private XrmFakedPluginExecutionContext GetContext(string action = "Create", int stage = 20, string entityName = "contact")
