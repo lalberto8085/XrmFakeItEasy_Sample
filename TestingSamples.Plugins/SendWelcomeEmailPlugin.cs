@@ -24,12 +24,13 @@ namespace TestingSamples.Plugins
             var notificationHelper = NotificationHelper ?? new NotificationHelperService(localPluginContext);
 
             var context = localPluginContext.PluginExecutionContext;
-            if(context.MessageName == "Create" && context.Stage == 40 && context.PrimaryEntityName == "contact")
+            if (context.MessageName == "Create" && context.Stage == 40 && context.PrimaryEntityName == "contact")
             {
                 if (context.InputParameters.TryGetValue<Entity>("Target", out var target))
                 {
                     var contact = (Entity)context.InputParameters["Target"];
-                    notificationHelper.SendWelcomeEmail(contact.Id);
+                    if (contact.GetAttributeValue<string>("emailaddress1") != "default@example.com")
+                        notificationHelper.SendWelcomeEmail(contact.Id);
                 }
                 else
                 {
