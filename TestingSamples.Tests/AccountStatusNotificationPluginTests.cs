@@ -50,18 +50,22 @@ namespace TestingSamples.Tests
         public void ShouldNotSendNotificationIfStatusNotChanged()
         {
             // Arrange
-            var account = new Entity("account");
-            account["statuscode"] = new OptionSetValue(1);
+            var account = new Entity("account")
+            {
+                ["statuscode"] = new OptionSetValue(1)
+            };
 
-            var preImage = new Entity("account");
-            preImage["statuscode"] = new OptionSetValue(1);
+            var preImage = new Entity("account")
+            {
+                ["statuscode"] = new OptionSetValue(1)
+            };
 
             var context = _context.GetDefaultPluginContext();
             context.InputParameters["Target"] = account;
             context.PreEntityImages.Add("PreImage", preImage);
 
             var mockContext = new Mock<ILocalPluginContext>();
-            var fakeNotificationHelper =  new Mock<NotificationHelperService>(mockContext.Object);
+            var fakeNotificationHelper = new Mock<NotificationHelperService>(mockContext.Object);
 
             fakeNotificationHelper.Setup(x => x.SendAccountStatusChangeNotification(It.IsAny<Guid>()))
                 .Verifiable(Times.Never());
@@ -82,11 +86,15 @@ namespace TestingSamples.Tests
         public void ShouldSendNotificationIfStatusChanged()
         {
             // Arrange
-            var account = new Entity("account");
-            account["statuscode"] = new OptionSetValue(1);
+            var account = new Entity("account")
+            {
+                ["statuscode"] = new OptionSetValue(1)
+            };
 
-            var preImage = new Entity("account");
-            preImage["statuscode"] = new OptionSetValue(2);
+            var preImage = new Entity("account")
+            {
+                ["statuscode"] = new OptionSetValue(2)
+            };
 
             var context = _context.GetDefaultPluginContext();
             context.InputParameters["Target"] = account;

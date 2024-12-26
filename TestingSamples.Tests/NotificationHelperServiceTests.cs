@@ -94,10 +94,11 @@ namespace TestingSamples.Tests
             _sut = new NotificationHelperService(BuildLocalPluginContext());
 
             // Act
-            _sut.SendWelcomeEmail(_context.CreateQuery("contact").First().Id);
+            var contactId = _context.CreateQuery("contact").First().Id;
+            _sut.SendWelcomeEmail(contactId);
 
             // Assert
-            _context.CreateQuery("email").Count().Should().Be(1);
+            _context.CreateQuery("email").Should().HaveCount(1);
         }
 
         [Fact]
